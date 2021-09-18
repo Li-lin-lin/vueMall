@@ -25,7 +25,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .goods {
   display: flex;
   /* flex布局中等分 */

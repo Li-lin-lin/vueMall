@@ -77,7 +77,8 @@ export default {
       showBackControl: false,
       tabOffsetTop: 0,
       isTabFixed: false,
-      saveY: 0
+      saveY: 0,
+      itemImgListener: null
     }
   },
   created () {
@@ -92,11 +93,12 @@ export default {
 
   },
   mounted () {
-    const refresh = debounce(this.$refs.scroll.refresh, 50)
+    let refresh = debounce(this.$refs.scroll.refresh, 50)
     // 监听item中图片加载完成
-    this.$bus.$on('itemImageLoad', () => {
+    this.itemImgListener = () => {
       refresh()
-    })
+    }
+    this.$bus.$on('itemImageLoad', this.itemImgListener)
 
   },
   // 活跃时
@@ -106,7 +108,10 @@ export default {
   },
   // 不活跃
   deactivated () {
+    // 保存y值
     this.saveY = this.$refs.scroll.getScrollY()
+    // 取消全局时间监听 要传两个参数不然会把所有事件都取消掉 第二个参数是监听的那个函数
+    this.$bus.$off('itemImgLoad', this.itemImgListener)
   },
   methods: {
 
